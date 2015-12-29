@@ -1,4 +1,4 @@
-# html-minify-loader的配置
+# 如何配置html-minify-loader
 
 安装必要组件
 ---
