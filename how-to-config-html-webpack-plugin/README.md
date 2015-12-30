@@ -1,4 +1,4 @@
-# 如何配置html-minify-loader
+# 如何配置html-webpack-plugin
 
 安装必要组件
 ---
