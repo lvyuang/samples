@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var sample = [5, 6, 9, 2, 3, 1, 7, 8, 4];
+
+        function quicksort(list, start, end) {
+            var switchCursor;
+            var length = list.length;
+            var temp;
+
+            if (end - start <= 0) {
+                return;
+            }
+
+            if (!start) {
+                start = 0;
+            }
+
+            if (!end) {
+                end = length - 1;
+            }
+
+            switchCursor = start;
+
+            for (; start <= end; start++) {
+                if (list[start] < list[end]) {
+                    temp = list[switchCursor];
+                    list[switchCursor] = list[start];
+                    list[start] = temp;
+                    switchCursor++;
+                }
+            }
+
+            temp = list[end];
+            list[end] = list[switchCursor];
+            list[switchCursor] = temp;
+
+            quicksort(list, 0, switchCursor - 1);
+            quicksort(list, switchCursor + 1, end);
+        }
+
+        quicksort(sample);
+
+        console.log('result', sample);
+    </script>
+</body>
+</html>
