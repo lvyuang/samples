@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #root {
+      width: 800px;
+      margin: 0 auto;
+      height: 3000px;
+      background-color: grey;
+      position: relative;
+    }
+
+    #timer {
+      position: absolute;
+      left: 300px;
+      top: 600px;
+      width: 200px;
+      height: 100px;
+      line-height: 100px;
+      text-align: center;
+      background-color: rgba(0, 0, 117, 1);
+      color: white;
+      font-size: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <div id="timer"></div>
+  </div>
+  <script>
+    const counterNode = document.getElementById('timer')
+
+    const counterWrapper = (counterNode) => {
+      let num = 1
+      let timeId = null
+
+      function start() {
+        console.log('start')
+
+        if (timeId) {
+          return
+        }
+
+        (function loop() {
+          timeId = setTimeout(() => {
+            counterNode.textContent = num.toString()
+            num++
+            loop()
+          }, 1000)
+        })()
+      }
+
+      function stop() {
+        console.log('stop')
+
+        clearTimeout(timeId)
+        timeId = null
+        num = 1
+        counterNode.textContent = '0'
+      }
+
+      return {
+        start,
+        stop
+      }
+    }
+
+    const counter = counterWrapper(counterNode);
+
+    (() => {
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            counter.start()
+          } else {
+            counter.stop()
+          }
+        })
+      }, {
+        root: null,
+        rootMargin: '-200px',
+        threshold: 0
+      })
+
+      observer.observe(counterNode)
+    })();
+
+    (() => {
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          counterNode.style.backgroundColor = `rgba(0, 0, 117, ${entry.intersectionRatio})`;
+        })
+      }, {
+        root: null,
+        rootMargin: '-200px',
+        threshold: Array.apply(null, {length: 100}).map(Function.call, Number).map(i => i / 100)
+      })
+
+      observer.observe(counterNode)
+    })();
+  </script>
+</body>
+</html>
