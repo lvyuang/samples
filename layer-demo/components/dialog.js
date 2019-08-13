@@ -1,0 +1,4 @@
+const Dialog = {
+  'open': () => {},
+  'close': () => {},
+}
