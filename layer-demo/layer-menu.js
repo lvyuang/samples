@@ -1,6 +1,6 @@
 layer.run((context) => {
   context.use('item-node').forEach((itemNode, itemData) => {
-    itemNodes.addEventListener('contextmenu', (event) => {
+    itemNode.addEventListener('contextmenu', (event) => {
       Menu.show(event, [
         MenuItem({
           'title': '在新窗口打开',
