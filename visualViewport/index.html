@@ -50,7 +50,6 @@
     }
 
     .line input {
-      width: 100px;
       border: 1px solid black;
     }
 
@@ -67,7 +66,7 @@
     }
 
     .overflow-block {
-      height: 1000px;
+      height: 1200px;
       background-color: black;
     }
   </style>
@@ -76,22 +75,25 @@
   <form>
     <div class="root">
       <div class="line">
-        <span>1 number:</span>
+        <span>recalculate when visualViewport scroll:</span>
+        <input type="checkbox" onclick="enableVisualViewportScroll = this.checked; setFixedBarTop();" checked />
+      </div>
+      <div class="line">
+        <span>fixedBar position:</span>
+        <span>
+          <input id="radio-top" type="radio" name="fixedbar-position" value="top" checked="true" onchange="fixedbarPosition = this.value; setFixedBarTop();" />
+          <label for="radio-top">top</label>
+        </span>
+        <span>
+          <input id="radio-bottom" type="radio" name="fixedbar-position" value="bottom" onchange="fixedbarPosition = this.value; setFixedBarTop();" />
+          <label for="radio-bottom">bottom</label>
+        </span>
+      </div>
+      <div class="line">
+        <span>number:</span>
         <input type="number" />
       </div>
-      <div class="line">
-        <span>text:</span>
-        <input type="text" />
-      </div>
-      <div class="line">
-        <span>date:</span>
-        <input type="date" />
-      </div>
       <div class="overflow-block"></div>
-      <div class="line">
-        <span>datetime:</span>
-        <input type="datetime" />
-      </div>
       <div class="line">
         <span>email:</span>
         <input type="email" />
@@ -103,9 +105,21 @@
 
   <script>
     const fixedBar = document.querySelector('.fixed-bar');
-    const root = document.querySelector('.root')
+    const root = document.querySelector('.root');
 
     let pendingUpdate = false;
+    let enableVisualViewportScroll = true;
+    let fixedbarPosition = 'top';
+
+    const setFixedBarTop = () => {
+      if (fixedbarPosition === 'top') {
+        fixedBar.style.top = `calc(${window.visualViewport.offsetTop}px)`;
+      } else {
+        fixedBar.style.top = `calc(${window.visualViewport.offsetTop + window.visualViewport.height}px - 4rem)`;
+      }
+
+      fixedBar.innerHTML = `<span>enableVisualViewportScroll: ${enableVisualViewportScroll}</span><br/><span>fixedbarPosition: ${fixedbarPosition}</span>`;
+    };
 
     const update = () => {
       if (pendingUpdate) return;
@@ -115,7 +129,10 @@
       // Use requestAnimationFrame so the update happens before next render
       requestAnimationFrame(() => {
         pendingUpdate = false;
-        fixedBar.style.top = `calc(${window.visualViewport.offsetTop}px + ${window.visualViewport.height}px - 4rem)`
+
+        if (enableVisualViewportScroll) {
+          setFixedBarTop();
+        }
       })
     };
 
@@ -124,14 +141,13 @@
       // In iOS, event "visualViewport.scroll" was not fired every frame
       // it was triggered when scroll event stopped
       window.visualViewport.addEventListener('scroll', update);
-      root.addEventListener('scroll', update);
 
-      update();
+      setFixedBarTop();
 
       document.addEventListener('gesturestart', function (e) {
         e.preventDefault();
       });
-    })
+    });
   </script>
 </body>
 </html>
